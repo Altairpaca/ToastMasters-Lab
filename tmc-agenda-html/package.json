@@ -1,0 +1,18 @@
+{
+  "name": "tmc-agenda-html",
+  "version": "0.5.0",
+  "description": "TMC Toolkit · 议程生成 + xlsx 保真导出（单文件 HTML）",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "node build/inline.js",
+    "test": "node test/smoke.js && node test/xlsx.test.js",
+    "smoke": "node test/smoke.js"
+  },
+  "author": "Altair Li <altairpaca@gmail.com> (https://github.com/Altairpaca)",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "tmc-core": "file:../tmc-core"
+  }
+}

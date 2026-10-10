@@ -1,0 +1,35 @@
+<view class="wrap">
+  <view class="card">
+    <view class="card-title">备稿申请 Speech</view>
+    <view class="field"><view class="label">会议 ID</view>
+      <input class="input" value="{{meetingId}}" bindinput="onId" /></view>
+    <view class="field"><view class="label">会员名 Member</view>
+      <input class="input" value="{{memberId}}" bindinput="onMember" placeholder="如 Li Si" /></view>
+    <view class="field"><view class="label">项目级别 Level</view>
+      <input class="input" value="{{level}}" bindinput="onLevel" placeholder="L1..L5" /></view>
+    <view class="field"><view class="label">项目标题 Title</view>
+      <input class="input" value="{{title}}" bindinput="onTitle" /></view>
+    <view class="field"><view class="label">Pathway</view>
+      <input class="input" value="{{pathway}}" bindinput="onPathway" /></view>
+    <view class="field"><view class="label">点评师 Evaluator</view>
+      <input class="input" value="{{evaluator}}" bindinput="onEvaluator" /></view>
+    <view class="btn-row">
+      <view class="field" style="flex:1"><view class="label">最短分钟</view>
+        <input class="input" type="number" value="{{minMin}}" bindinput="onMin" /></view>
+      <view class="field" style="flex:1"><view class="label">最长分钟</view>
+        <input class="input" type="number" value="{{maxMin}}" bindinput="onMax" /></view>
+    </view>
+    <view class="btn-row"><button class="btn" bindtap="submit">提交备稿</button></view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">备稿队列（{{speeches.length}}）</view>
+    <view wx:if="{{speeches.length === 0}}" class="empty-tip">还没有备稿</view>
+    <view wx:for="{{speeches}}" wx:key="index" class="list-item">
+      <view class="grow">
+        <view class="who">{{item.member_id}}</view>
+        <view class="hint">{{item.project_level}} · {{item.project_title}} · 点评 {{item.evaluator}}</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,61 @@
+/* tmc-miniprogram/app.wxss
+ * 全局样式（对应 tmc-officers-html/src/ui/shell.css 的小程序移植简化版）。
+ *
+ * @author Altair Li <altairpaca@gmail.com>
+ * @license MIT
+ */
+page {
+  background: #f4f6fb;
+  color: #1b2233;
+  font-size: 30rpx;
+  line-height: 1.5;
+}
+
+.wrap { padding: 24rpx; }
+
+.card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 30rpx rgba(20, 40, 80, 0.08);
+}
+
+.card-title { font-weight: 800; color: #004165; margin-bottom: 20rpx; font-size: 32rpx; }
+
+.field { display: flex; flex-direction: column; margin-bottom: 20rpx; }
+.field .label { font-size: 24rpx; color: #7a869a; font-weight: 700; margin-bottom: 8rpx; }
+
+.input, .picker, .textarea {
+  border: 2rpx solid #e4e9f2; border-radius: 16rpx; padding: 16rpx 20rpx;
+  background: #fff; font-size: 30rpx;
+}
+
+.btn {
+  background: #004165; color: #fff; border-radius: 16rpx; padding: 20rpx 28rpx;
+  font-weight: 700; font-size: 30rpx; text-align: center; border: none;
+}
+.btn.ghost { background: #fff; color: #004165; border: 2rpx solid #004165; }
+.btn.gold { background: #c9a227; }
+.btn.sm { padding: 12rpx 20rpx; font-size: 26rpx; }
+.btn-row { display: flex; gap: 16rpx; margin-top: 20rpx; flex-wrap: wrap; }
+
+.hint { color: #7a869a; font-size: 26rpx; margin: 12rpx 0; }
+.empty-tip { color: #7a869a; text-align: center; padding: 40rpx; }
+
+.list-item {
+  display: flex; align-items: center; gap: 16rpx; padding: 20rpx 0;
+  border-bottom: 2rpx solid #e4e9f2;
+}
+.list-item .grow { flex: 1; }
+.list-item .who { font-weight: 800; color: #004165; }
+
+.pill { display: inline-block; padding: 4rpx 18rpx; border-radius: 20rpx; font-size: 24rpx; font-weight: 700; }
+.pill.ok { background: #e8f7ee; color: #15803d; }
+.pill.over { background: #fdeaea; color: #b91c1c; }
+.pill.under { background: #e9effd; color: #1d4ed8; }
+
+.chip { display: inline-block; padding: 14rpx 28rpx; border-radius: 32rpx; border: 2rpx solid #e4e9f2; margin: 0 16rpx 16rpx 0; background: #fff; font-weight: 700; }
+.chip.active { background: #004165; color: #fff; border-color: #004165; }
+
+.offline-note { background: #fdf6e3; color: #8a6d1f; border-radius: 16rpx; padding: 16rpx 24rpx; font-size: 26rpx; font-weight: 700; }

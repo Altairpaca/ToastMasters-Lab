@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "报告 Report",
+  "usingComponents": {
+    "report-view": "/components/report-view/report-view"
+  }
+}

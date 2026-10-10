@@ -1,0 +1,45 @@
+<view class="wrap">
+  <view class="card">
+    <view class="card-title">报名接龙 RSVP</view>
+    <view class="field">
+      <view class="label">会议 ID Meeting ID</view>
+      <input class="input" value="{{meetingId}}" bindinput="onId" placeholder="YYYY-MM-DD_第N次" />
+    </view>
+    <view class="field">
+      <view class="label">姓名 Name</view>
+      <input class="input" value="{{name}}" bindinput="onName" placeholder="请输入姓名" />
+    </view>
+    <view class="field">
+      <view class="label">意向角色 Role preference</view>
+      <input class="input" value="{{rolePref}}" bindinput="onRole" placeholder="如 主持人 / 备稿演讲" />
+    </view>
+    <view class="btn-row">
+      <button class="btn" bindtap="submit">报名</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">已报名（{{rsvpList.length}}）</view>
+    <view wx:if="{{rsvpList.length === 0}}" class="empty-tip">还没有报名</view>
+    <view wx:for="{{rsvpList}}" wx:key="index" class="list-item">
+      <view class="grow">
+        <view class="who">{{item.name}}</view>
+        <view class="hint">{{item.role_pref}}</view>
+      </view>
+      <view class="pill ok">已确认</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">来宾 Guests（{{guests.length}}）</view>
+    <view class="field">
+      <view class="label">来宾姓名</view>
+      <input class="input" value="{{guestName}}" bindinput="onGuestName" placeholder="来宾姓名" />
+    </view>
+    <button class="btn ghost" bindtap="addGuest">＋ 登记来宾</button>
+    <view wx:for="{{guests}}" wx:key="index" class="list-item">
+      <view class="grow"><view class="who">{{item.name}}</view></view>
+      <view wx:if="{{item.is_new}}" class="pill under">新来宾</view>
+    </view>
+  </view>
+</view>

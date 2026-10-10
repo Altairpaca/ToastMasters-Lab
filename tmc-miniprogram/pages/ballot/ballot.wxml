@@ -1,0 +1,28 @@
+<view class="wrap">
+  <view class="card">
+    <view class="card-title">评选投票 Ballot</view>
+    <view class="field"><view class="label">会议 ID</view>
+      <input class="input" value="{{meetingId}}" bindinput="onId" /></view>
+    <view class="field"><view class="label">投票类别</view>
+      <view class="btn-row">
+        <view wx:for="{{categories}}" wx:key="key"
+              class="chip {{category === item.key ? 'active' : ''}}"
+              data-key="{{item.key}}" bindtap="onCat">{{item.label}}</view>
+      </view>
+    </view>
+    <view class="field"><view class="label">候选（逗号/顿号分隔）</view>
+      <input class="input" value="{{candidatesText}}" bindinput="onCands" placeholder="张三，李四" /></view>
+    <view class="field"><view class="label">选票（每行一张，多选空格分隔）</view>
+      <textarea class="textarea" value="{{votesText}}" bindinput="onVotes" placeholder="张三&#10;张三&#10;李四" /></view>
+    <button class="btn" bindtap="tally">统计结果</button>
+  </view>
+
+  <view wx:if="{{result}}" class="card">
+    <view class="card-title">结果 Result</view>
+    <view wx:for="{{result.candidates}}" wx:key="index" class="list-item">
+      <view class="grow"><view class="who">{{item}}</view></view>
+      <view class="pill ok">{{result.tally[item]}} 票</view>
+    </view>
+    <view class="hint">当选：{{result.result}}</view>
+  </view>
+</view>

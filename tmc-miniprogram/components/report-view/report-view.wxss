@@ -1,0 +1,19 @@
+/* tmc-miniprogram/components/report-view/report-view.wxss */
+.rv { background: #fff; border-radius: 16rpx; padding: 24rpx; box-shadow: 0 4rpx 16rpx rgba(0,65,101,0.06); }
+.rv-title { color: #004165; font-size: 34rpx; font-weight: 700; }
+.rv-title-en { color: #6b7785; font-size: 24rpx; font-weight: 400; }
+.rv-meta { margin-top: 8rpx; }
+.rv-meta-item { color: #6b7785; font-size: 24rpx; margin-right: 20rpx; }
+.rv-table { margin-top: 20rpx; }
+.rv-thead, .rv-tr { display: flex; border-bottom: 1rpx solid #eef1f5; }
+.rv-th { flex: 1; padding: 14rpx 8rpx; font-size: 24rpx; color: #004165; font-weight: 600; }
+.rv-td { flex: 1; padding: 16rpx 8rpx; font-size: 26rpx; color: #1f2d3d; }
+.st-under { background: #fef3c7; }
+.st-ok { background: #d1fae5; }
+.st-over { background: #fee2e2; }
+.rv-summary { margin-top: 20rpx; color: #1f2d3d; font-size: 28rpx; line-height: 1.6; }
+.rv-extra { margin-top: 12rpx; }
+.rv-extra-item { color: #6b7785; font-size: 24rpx; }
+.rv-extra-label { color: #004165; }
+.rv-footer { margin-top: 20rpx; color: #9aa5b1; font-size: 22rpx; }
+.rv-empty { text-align: center; color: #9aa5b1; font-size: 26rpx; padding: 40rpx 0; }

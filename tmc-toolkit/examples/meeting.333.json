@@ -1,0 +1,55 @@
+{
+  "meeting_id": "2026-10-08_第335次",
+  "meeting_number": 335,
+  "date": "2026-10-08",
+  "start_time": "19:15",
+  "end_time": "21:30",
+  "language": "bilingual",
+  "theme": { "zh": "光", "en": "Light" },
+  "word_of_the_day": { "zh": "洞察", "en": "insight", "pos": "n.", "example": "Her insight changed the whole discussion." },
+  "venue": "广州南沙",
+  "roles": [
+    { "role": "meeting_manager", "name_zh": "陈明", "name_en": "Chen Ming" },
+    { "role": "toastmaster_of_ceremony", "name_zh": "张三", "name_en": "Zhang San" },
+    { "role": "general_evaluator", "name_zh": "王芳", "name_en": "Wang Fang" },
+    { "role": "timer", "name_zh": "李四", "name_en": "Li Si" },
+    { "role": "ah_counter", "name_zh": "赵六", "name_en": "Zhao Liu" },
+    { "role": "grammarian", "name_zh": "孙七", "name_en": "Sun Qi" }
+  ],
+  "agenda": [
+    { "segment_id": "seg-opening", "type": "opening", "title_zh": "会议召集", "title_en": "Call to Order", "duration_min": 3 },
+    { "segment_id": "seg-tt", "type": "table_topics", "title_zh": "即兴演讲", "title_en": "Table Topics", "duration_min": 30, "buffer_min": 2 },
+    { "segment_id": "seg-speech-1", "type": "prepared_speech", "title_zh": "备稿演讲 1", "title_en": "Prepared Speech 1", "presenter": "李四", "duration_min": 7, "project": "L2-1 Ice Breaker" },
+    { "segment_id": "seg-eval-1", "type": "evaluation", "title_zh": "点评 1", "title_en": "Evaluation 1", "duration_min": 3 },
+    { "segment_id": "seg-closing", "type": "closing", "title_zh": "会议尾声", "title_en": "Closing", "duration_min": 5 }
+  ],
+  "speeches": [
+    { "member_id": "Li Si", "project_level": "L2", "project_title": "Ice Breaker", "pathway": "Presentation Mastery", "evaluator": "Wang Fang", "requirements": { "min_min": 4, "max_min": 6 } }
+  ],
+  "guests": [
+    { "name": "刘八", "contact": "138****0000", "source": "朋友圈", "is_new": true }
+  ],
+  "rsvp": [
+    { "name": "张三", "role_pref": "主持人", "confirmed": true },
+    { "name": "李四", "role_pref": "备稿演讲", "confirmed": true }
+  ],
+  "ballot": [
+    { "category": "best_speaker", "candidates": ["李四", "张三"], "result": ["李四"] },
+    { "category": "best_table_topics", "candidates": ["赵六", "孙七"], "result": ["孙七"] }
+  ],
+  "officers_records": {
+    "timer": [
+      { "segment_id": "seg-speech-1", "planned_min": 7, "actual_sec": 390, "status": "green" },
+      { "segment_id": "seg-tt", "planned_min": 30, "actual_sec": 1830, "status": "yellow" }
+    ],
+    "ah_counter": [
+      { "member_id": "Li Si", "counts": { "um": 3, "那个": 2 }, "top3": ["um", "那个"] }
+    ],
+    "grammarian": [
+      { "member_id": "Li Si", "good_phrases": ["a leap of faith"], "corrections": ["very unique → unique"] }
+    ]
+  },
+  "minutes": "## 会议纪要\n\n本期主题「光」顺利举行，共 12 位会员与 2 位来宾出席。",
+  "attachments": [ { "name": "Timer_Report_2026-10-08.png", "path": "./attachments/timer.png" } ],
+  "meta": { "version": "1.0", "owner": "Altair Li", "updated_at": "2026-10-08T13:20:00Z" }
+}

@@ -1,0 +1,115 @@
+%% TMC Toolkit · 时序图（Sequence Diagram）
+%% 对应 docs/ARCHITECTURE.md §8
+
+%% 8.1 会前制表链路（新建会议 → 填表 → 保真导出）
+sequenceDiagram
+    autonumber
+    actor T as 事务官
+    participant UI as agendaForm(HTML/MP)
+    participant AS as AgendaService
+    participant MM as MeetingModel
+    participant SP as StoragePort
+    participant AC as AgendaCore
+    participant XW as XlsxWriter
+    participant FP as FilePort
+
+    T->>UI: 新建本期会议(期数/日期/主题/每日一词)
+    UI->>MM: empty(template)
+    MM-->>UI: Meeting 骨架
+    T->>UI: 填写角色分配 + 备稿(PPT 要求)
+    UI->>MM: validate(meeting)
+    MM-->>UI: {ok, errors[]}
+    UI->>SP: set('meeting:2026-09-15_第333次', json)
+    SP-->>UI: ok
+
+    T->>UI: 点击「导出保真 xlsx」
+    UI->>AS: exportXlsx(plan)
+    AS->>AC: buildRows(meeting, anchors)
+    AC-->>AS: RowPlan[] + 时间列公式
+    AS->>XW: patch(baseBytes, edits)
+    Note over XW: 复制底稿 → XML 直改<br/>sheet1.xml / sharedStrings.xml<br/>保 EMF/Logo/二维码
+    XW->>XW: stripCalcChain(zip)
+    XW-->>AS: 保真 xlsx (Uint8Array)
+    AS->>FP: save('2026.09.15第 333 次例会会议程表.xlsx', bytes, mime)
+    FP-->>T: 下载完成
+    AS->>SP: set('meeting:...', meeting+附件引用)
+
+%% 8.2 会中三官记录链路（离线 · 计时/哼哈/语法 → 报告 → PNG）
+sequenceDiagram
+    autonumber
+    actor O as 三官
+    participant UI as officerView
+    participant OS as OfficerService
+    participant TC as TimerCore
+    participant CLK as ClockPort
+    participant RK as ReportKernel
+    participant IK as ImageKernel
+    participant CP as CanvasPort
+    participant FP as FilePort
+
+    O->>UI: 打开单文件 HTML（file:// 断网）
+    UI->>UI: net.isAvailable() → false（隐藏 ASR 入口，无报错）
+    O->>UI: 选择环节「备稿演讲 5min」并开始计时
+    UI->>OS: startSegment('seg-speech-1', 5)
+    OS->>TC: createStopwatch(clock)
+    OS->>CLK: raf(tick)
+    loop 每帧
+        CLK-->>TC: now()
+        TC-->>UI: 剩余/已用 + 三色灯状态
+    end
+    O->>UI: 结束计时
+    UI->>OS: record({segment_id, actual_sec, status})
+    Note over OS: judgeStatus(actual, green, red)
+
+    O->>UI: 切到「报告」→ 生成
+    UI->>OS: getReport('timer')
+    OS->>RK: buildTimerReport(records, meta)
+    RK->>RK: colorizeCells(vm)
+    RK-->>OS: ReportViewModel
+    OS->>RK: toMarkdown(vm)
+    RK-->>UI: Markdown + HTML 多视图
+
+    O->>UI: 导出 PNG（发群）
+    UI->>OS: exportPng(vm)
+    OS->>IK: render(vm, canvasPort)
+    IK->>CP: create(W,H)
+    CP-->>IK: CanvasLike
+    IK->>IK: wrapByWidth + 2x 白底绘制
+    IK->>CP: toDataURL('image/png')
+    CP-->>OS: dataURL
+    OS->>FP: save('Timer_Report_2026-09-15.png', ...)
+    FP-->>O: 图片已保存
+    OS->>OS: exportJson() → 汇总进 meeting.json
+
+%% 8.3 会后复盘链路（汇总 → 纪要 → 成长数据）
+sequenceDiagram
+    autonumber
+    actor E as 教育副会长
+    participant UI as minutesView
+    participant MS as MinutesService
+    participant SP as StoragePort
+    participant MM as MeetingModel
+    participant RK as ReportKernel
+    participant AS as AgendaService
+
+    E->>UI: 打开「会后复盘」
+    UI->>SP: keys() 列出本季所有 meeting
+    SP-->>UI: ['meeting:...333','meeting:...334', ...]
+    UI->>SP: get('meeting:2026-09-15_第333次')
+    SP-->>UI: meeting.json
+
+    UI->>MS: generateMinutes(meeting)
+    MS->>MM: normalize(meeting)
+    MS->>RK: buildTimerReport + AhReport + GrammarianReport
+    RK-->>MS: 三官视图模型
+    MS-->>UI: 纪要 Markdown（含三官摘要/投票结果/来宾）
+
+    E->>UI: 编辑纪要并保存
+    UI->>MS: (编辑后) meeting.minutes = md
+    UI->>SP: set('meeting:...333', meeting)
+    SP-->>UI: ok
+
+    E->>UI: 查看成长看板
+    UI->>MS: growthSummary(allMeetings)
+    MS-->>UI: {出勤趋势, 角色分布, 备稿级别, 合格率}
+    UI->>AS: （可选）把未排期备稿带入下期

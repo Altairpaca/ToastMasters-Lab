@@ -1,0 +1,184 @@
+/* tmc-officers-html/src/ui/shell.css
+ * 三官助手全局样式 + 报告版式。零外部引用（无 @import / 无外链字体）。
+ *
+ * @author Altair Li <altairpaca@gmail.com>
+ * @license MIT
+ */
+:root {
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --ink: #1b2233;
+  --muted: #7a869a;
+  --border: #e4e9f2;
+  --accent: #004165;
+  --gold: #c9a227;
+  --ok: #15803d;
+  --ok-bg: #e8f7ee;
+  --over: #b91c1c;
+  --over-bg: #fdeaea;
+  --under: #1d4ed8;
+  --under-bg: #e9effd;
+  --shadow: 0 6px 22px rgba(20, 40, 80, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Microsoft YaHei", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+#app { max-width: 1080px; margin: 0 auto; padding: 16px 14px 60px; }
+
+/* ---------- 顶栏 ---------- */
+.topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; background: var(--card); border-radius: 14px;
+  box-shadow: var(--shadow); margin-bottom: 14px; flex-wrap: wrap;
+}
+.topbar h1 { font-size: 1.15rem; margin: 0; color: var(--accent); font-weight: 800; }
+.topbar .sub { color: var(--muted); font-size: .82rem; font-weight: 600; }
+.topbar .spacer { flex: 1; }
+
+/* ---------- 标签页 ---------- */
+.tabs { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.tab {
+  padding: 9px 16px; border-radius: 10px; border: 1.5px solid var(--border);
+  background: var(--card); color: var(--ink); font-weight: 700; cursor: pointer;
+  font-size: .92rem; transition: all .15s;
+}
+.tab:hover { border-color: var(--accent); }
+.tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ---------- 卡片 ---------- */
+.card {
+  background: var(--card); border-radius: 14px; padding: 16px;
+  box-shadow: var(--shadow); margin-bottom: 14px;
+}
+.card-title { font-weight: 800; color: var(--accent); margin-bottom: 12px; font-size: 1rem; }
+
+/* ---------- 表单控件 ---------- */
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+.field { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 130px; }
+.field label { font-size: .78rem; color: var(--muted); font-weight: 700; }
+input[type="text"], input[type="date"], input[type="number"], select, textarea {
+  padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 9px;
+  font-size: .92rem; font-family: inherit; color: var(--ink); background: #fff; width: 100%;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
+
+.btn {
+  padding: 9px 16px; border-radius: 10px; border: none; cursor: pointer;
+  font-weight: 700; font-size: .9rem; background: var(--accent); color: #fff; transition: all .15s;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: #fff; color: var(--accent); border: 1.5px solid var(--accent); }
+.btn.gold { background: var(--gold); }
+.btn.sm { padding: 6px 12px; font-size: .82rem; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---------- 计时器 ---------- */
+.timer-box {
+  text-align: center; padding: 22px 16px; border-radius: 16px;
+  background: #fff; border: 4px solid var(--border); transition: border-color .2s;
+}
+.timer-box.green { border-color: var(--ok); }
+.timer-box.yellow { border-color: var(--gold); }
+.timer-box.red { border-color: var(--over); }
+.timer-box.over { border-color: var(--over); animation: blink 1s steps(2, start) infinite; }
+@keyframes blink { 50% { border-color: #fff; } }
+.clock { font-size: 4rem; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--ink); }
+.clock-sub { color: var(--muted); font-size: .95rem; margin-top: 4px; }
+.status-line { margin-top: 10px; font-weight: 700; font-size: 1rem; }
+
+.presets { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.preset-btn {
+  flex: 1; min-width: 120px; padding: 10px; border-radius: 10px; cursor: pointer;
+  border: 1.5px solid var(--border); background: #fff; text-align: left; font-weight: 700;
+  font-size: .85rem; line-height: 1.35;
+}
+.preset-btn .sub { display: block; color: var(--muted); font-weight: 600; font-size: .74rem; margin-top: 3px; }
+.preset-btn.active { border-color: var(--accent); background: #eef3fa; }
+
+/* ---------- 表格 ---------- */
+table.md-table, table.data-table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: .9rem; }
+table.md-table th, table.data-table th {
+  background: var(--head, #eef3fa); color: var(--accent); font-weight: 800;
+  padding: 9px 10px; border-bottom: 2px solid var(--accent); text-align: left;
+}
+table.md-table td, table.data-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+table.md-table tbody tr:nth-child(even), table.data-table tbody tr:nth-child(even) { background: #f7f9fc; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---------- 状态胶囊 ---------- */
+.st-pill { display: inline-block; padding: 2px 10px; border-radius: 12px; font-weight: 700; font-size: .82rem; }
+.st-pill.st-ok { background: var(--ok-bg); color: var(--ok); }
+.st-pill.st-over { background: var(--over-bg); color: var(--over); }
+.st-pill.st-under { background: var(--under-bg); color: var(--under); }
+.badge { display: inline-block; padding: 2px 9px; border-radius: 10px; font-weight: 700; font-size: .8rem; }
+.badge.ok { background: var(--ok-bg); color: var(--ok); }
+.badge.over { background: var(--over-bg); color: var(--over); }
+.badge.under { background: var(--under-bg); color: var(--under); }
+
+/* ---------- 报告三视图 ---------- */
+.rep-tabs { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.rep-tab {
+  padding: 7px 14px; border-radius: 9px; border: 1.5px solid var(--border);
+  background: #fff; cursor: pointer; font-weight: 700; font-size: .85rem;
+}
+.rep-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.report-tools { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.report-render { border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: #fff; }
+
+/* ---------- 哼哈/语法：词钮 ---------- */
+.word-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+.word-btn {
+  padding: 8px 14px; border-radius: 10px; border: 1.5px solid var(--border);
+  background: #fff; cursor: pointer; font-weight: 700; font-size: .88rem; position: relative;
+}
+.word-btn.filler { border-color: #f0c9c9; }
+.word-btn.overused { border-color: #c9d6f0; }
+.word-btn .cnt {
+  display: inline-block; margin-left: 6px; min-width: 20px; text-align: center;
+  background: var(--accent); color: #fff; border-radius: 8px; padding: 0 5px; font-size: .76rem;
+}
+.word-btn.hot { background: var(--over-bg); border-color: var(--over); }
+
+.person-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.person-chip {
+  padding: 7px 14px; border-radius: 16px; border: 1.5px solid var(--border);
+  background: #fff; cursor: pointer; font-weight: 700; font-size: .88rem;
+}
+.person-chip .wod { color: var(--gold); font-weight: 800; margin-left: 5px; }
+
+.log-list { list-style: none; padding: 0; margin: 10px 0 0; }
+.log-list li { padding: 8px 10px; border-bottom: 1px solid var(--border); font-size: .88rem; display: flex; gap: 8px; align-items: baseline; }
+.log-list li .who { font-weight: 800; color: var(--accent); }
+.log-list li .del { margin-left: auto; color: var(--muted); cursor: pointer; border: none; background: none; font-size: .9rem; }
+
+.stat-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.stat { flex: 1; min-width: 110px; background: #f7f9fc; border-radius: 12px; padding: 10px 14px; }
+.stat .num { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
+.stat .label { font-size: .76rem; color: var(--muted); font-weight: 700; }
+
+/* ---------- 杂项 ---------- */
+.hint { color: var(--muted); font-size: .82rem; margin: 6px 0; }
+.empty-tip { color: var(--muted); text-align: center; padding: 20px; font-size: .9rem; }
+.hidden { display: none !important; }
+.offline-note {
+  background: #fdf6e3; color: #8a6d1f; border-radius: 10px; padding: 8px 12px;
+  font-size: .82rem; font-weight: 700;
+}
+.footer { text-align: center; color: var(--muted); font-size: .78rem; margin-top: 22px; }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 700px) {
+  .clock { font-size: 3rem; }
+  .topbar h1 { font-size: 1rem; }
+}

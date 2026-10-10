@@ -1,0 +1,19 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/rsvp/rsvp",
+    "pages/speech/speech",
+    "pages/ballot/ballot",
+    "pages/agenda/agenda",
+    "pages/report/report"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#004165",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "TMC 工具",
+    "backgroundColor": "#f4f6fb",
+    "backgroundTextStyle": "light"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

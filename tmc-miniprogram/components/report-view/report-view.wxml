@@ -1,0 +1,35 @@
+<!-- tmc-miniprogram/components/report-view/report-view.wxml -->
+<view class="rv" wx:if="{{vm}}">
+  <view class="rv-title">{{vm.title.zh}}<text class="rv-title-en" wx:if="{{vm.title.en}}"> {{vm.title.en}}</text></view>
+
+  <view class="rv-meta" wx:if="{{vm.meta}}">
+    <text class="rv-meta-item" wx:if="{{vm.meta.meetingName}}">{{vm.meta.meetingName}}</text>
+    <text class="rv-meta-item" wx:if="{{vm.meta.date}}">{{vm.meta.date}}</text>
+  </view>
+
+  <view class="rv-table">
+    <view class="rv-thead">
+      <view wx:for="{{vm.headers}}" wx:key="*this" class="rv-th">{{item}}</view>
+    </view>
+    <view wx:for="{{vm.rows}}" wx:key="index" class="rv-tr">
+      <view
+        wx:for="{{item.cells}}"
+        wx:for-item="cell"
+        wx:key="index"
+        class="rv-td {{item.st === 'over' ? 'st-over' : (item.st === 'ok' ? 'st-ok' : (item.st === 'under' ? 'st-under' : ''))}}"
+      >{{cell}}</view>
+    </view>
+    <view class="rv-empty" wx:if="{{!vm.rows.length}}">暂无数据</view>
+  </view>
+
+  <view class="rv-summary" wx:if="{{vm.summary}}">{{vm.summary}}</view>
+
+  <view class="rv-extra" wx:if="{{vm.extra.length}}">
+    <view wx:for="{{vm.extra}}" wx:key="index" class="rv-extra-item">
+      <text class="rv-extra-label">{{item.label}}：</text>{{item.text}}
+    </view>
+  </view>
+
+  <view class="rv-footer" wx:if="{{vm.footer}}">{{vm.footer}}</view>
+</view>
+<view class="rv-empty" wx:else>暂无报告</view>

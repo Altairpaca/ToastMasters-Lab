@@ -1,0 +1,22 @@
+{
+  "name": "tmc-server-lite",
+  "version": "0.5.0",
+  "description": "TMC 工具链 · 可选极简服务端（零依赖，Node 内建 http）",
+  "main": "server.js",
+  "bin": {
+    "tmc-server-lite": "server.js"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/smoke.js"
+  },
+  "keywords": [
+    "toastmasters",
+    "tmc",
+    "server",
+    "zero-dependency"
+  ],
+  "author": "Altair Li <altairpaca@gmail.com>",
+  "license": "MIT",
+  "dependencies": {}
+}

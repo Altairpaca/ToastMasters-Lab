@@ -1,0 +1,17 @@
+<view class="wrap">
+  <view class="card">
+    <view class="card-title">TMC 工具</view>
+    <view class="hint">Toastmasters 头马俱乐部 · 会前 / 会中 / 会后 工具链</view>
+    <view wx:if="{{!netAvailable}}" class="offline-note">离线模式 · 联网增强已隐藏</view>
+  </view>
+
+  <view class="card">
+    <view wx:for="{{entries}}" wx:key="key" class="list-item" bindtap="go" data-key="{{item.key}}">
+      <view class="grow">
+        <view class="who">{{item.title}}</view>
+        <view class="hint">{{item.desc}}</view>
+      </view>
+      <view>›</view>
+    </view>
+  </view>
+</view>

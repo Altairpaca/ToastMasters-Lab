@@ -1,0 +1,181 @@
+classDiagram
+    class Adapters {
+        <<interface>>
+        +StoragePort storage
+        +CanvasPort canvas
+        +ClockPort clock
+        +FilePort file
+        +NetPort net
+    }
+    class StoragePort {
+        <<interface>>
+        +get(key) string
+        +set(key, value) void
+        +remove(key) void
+        +keys() string[]
+    }
+    class CanvasPort {
+        <<interface>>
+        +create(w, h) CanvasLike
+        +acquire(id) Promise~CanvasLike~
+    }
+    class ClockPort {
+        <<interface>>
+        +now() number
+        +wallClock() number
+        +raf(cb) number
+        +cancelRaf(h) void
+    }
+    class FilePort {
+        <<interface>>
+        +save(name, data, mime) Promise~void~
+    }
+    class NetPort {
+        <<interface>>
+        +isAvailable() boolean
+        +request(url, opts) Promise~any~
+    }
+
+    class WebStorageAdapter
+    class WxStorageAdapter
+    class HttpStorageAdapter
+    class WebCanvasAdapter
+    class WxCanvasAdapter
+    class SystemClockAdapter
+
+    StoragePort <|.. WebStorageAdapter
+    StoragePort <|.. WxStorageAdapter
+    StoragePort <|.. HttpStorageAdapter
+    CanvasPort  <|.. WebCanvasAdapter
+    CanvasPort  <|.. WxCanvasAdapter
+    ClockPort   <|.. SystemClockAdapter
+
+    class App {
+        +MeetingModel meeting
+        +AgendaService agenda
+        +RsvpService rsvp
+        +OfficerService officer
+        +MinutesService minutes
+    }
+    class createApp {
+        <<factory>>
+        +createApp(adapters) App
+    }
+
+    class MeetingModel {
+        +validate(raw) ValidationResult
+        +migrate(raw) Meeting
+        +normalize(m) Meeting
+        +empty(t) Meeting
+    }
+    class Meeting {
+        +string meeting_id
+        +int meeting_number
+        +string date
+        +Theme theme
+        +Role[] roles
+        +AgendaSegment[] agenda
+        +Speech[] speeches
+        +Guest[] guests
+        +Rsvp[] rsvp
+        +Ballot[] ballot
+        +OfficersRecords officers_records
+        +string minutes
+        +Meta meta
+    }
+    class Theme { +string zh +string en }
+    class WordOfTheDay { +string zh +string en +string pos +string example }
+    class Role { +string role +string member_id +string name_zh +string name_en }
+    class AgendaSegment { +string segment_id +string type +string title_zh +string title_en +number duration_min }
+    class Speech { +string member_id +string project_level +string evaluator }
+    class Guest { +string name +string contact +boolean is_new }
+    class Rsvp { +string name +string role_pref +boolean confirmed }
+    class Ballot { +string category +string[] candidates +string[] result }
+    class OfficersRecords { +TimerRec[] timer +AhRec[] ah_counter +GramRec[] grammarian }
+    class Meta { +string version +string owner +string updated_at }
+
+    Meeting *-- Theme
+    Meeting *-- WordOfTheDay
+    Meeting *-- "0..*" Role
+    Meeting *-- "0..*" AgendaSegment
+    Meeting *-- "0..*" Speech
+    Meeting *-- "0..*" Guest
+    Meeting *-- "0..*" Rsvp
+    Meeting *-- "0..*" Ballot
+    Meeting *-- OfficersRecords
+    Meeting *-- Meta
+
+    class MdRenderer {
+        +toHtml(md) string
+        +inline(s) string
+        +escapeHtml(s) string
+    }
+    class ReportKernel {
+        +buildTimerReport(recs, meta) ReportViewModel
+        +buildAhReport(recs, meta) ReportViewModel
+        +buildGrammarianReport(recs, meta) ReportViewModel
+        +toMarkdown(vm) string
+        +colorizeCells(vm) CellStyle[]
+    }
+    class ImageKernel {
+        +render(vm, canvasPort) CanvasLike
+        +wrapByWidth(ctx, text, maxW) string[]
+        +roundRectPath(ctx, x,y,w,h,r) void
+    }
+    class TimerCore {
+        +judgeStatus(sec, green, red) string
+        +formatTime(sec) string
+        +createStopwatch(clock) Stopwatch
+    }
+    class AgendaCore {
+        +buildRows(meeting, anchors) RowPlan[]
+        +timeColumn(start, rows) Formula[]
+        +nameWithEn(zh, enMap) string
+    }
+    class XlsxWriter {
+        +patch(baseBytes, edits) Uint8Array
+        +stripCalcChain(zip) void
+        +validate(bytes) ValidationResult
+    }
+
+    class AgendaService {
+        +buildAgenda(meeting, opts) AgendaPlan
+        +preview(plan) ReportViewModel
+        +exportXlsx(plan) Promise~Uint8Array~
+    }
+    class RsvpService {
+        +createRsvp(meetingId) void
+        +addGuest(guest) void
+        +applySpeech(speech) void
+        +tallyBallot(category) Ballot
+    }
+    class OfficerService {
+        +startSegment(segId, plannedMin) void
+        +record(entry) void
+        +getReport(kind) ReportViewModel
+        +exportPng(vm) Promise~string~
+        +exportJson() Meeting
+    }
+    class MinutesService {
+        +generateMinutes(meeting) string
+        +growthSummary(meetings) GrowthSummary
+    }
+
+    App *-- MeetingModel
+    App *-- AgendaService
+    App *-- RsvpService
+    App *-- OfficerService
+    App *-- MinutesService
+
+    AgendaService --> MeetingModel
+    AgendaService --> AgendaCore
+    AgendaService --> XlsxWriter
+    OfficerService --> TimerCore
+    OfficerService --> ReportKernel
+    OfficerService --> ImageKernel
+    ReportKernel --> MdRenderer
+    ImageKernel ..> CanvasPort : uses
+    OfficerService ..> StoragePort : uses
+    TimerCore ..> ClockPort : uses
+    createApp ..> Adapters : consumes
+    createApp ..> App : produces

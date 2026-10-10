@@ -1,0 +1,27 @@
+<!-- tmc-miniprogram/pages/report/report.wxml -->
+<view class="page">
+  <view class="card">
+    <view class="tabs">
+      <view
+        wx:for="{{kinds}}"
+        wx:key="key"
+        class="tab {{kind === item.key ? 'tab-on' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onKind"
+      >{{item.label}}</view>
+    </view>
+    <view class="subtabs">
+      <view class="subtab {{view === 'render' ? 'subtab-on' : ''}}" data-view="render" bindtap="onView">报告</view>
+      <view class="subtab {{view === 'markdown' ? 'subtab-on' : ''}}" data-view="markdown" bindtap="onView">Markdown</view>
+      <button class="mini-btn" bindtap="copyMd">复制 MD</button>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{view === 'render'}}">
+    <report-view vm="{{vm}}"></report-view>
+  </view>
+
+  <view class="card" wx:if="{{view === 'markdown'}}">
+    <text class="md">{{md || '暂无内容'}}</text>
+  </view>
+</view>

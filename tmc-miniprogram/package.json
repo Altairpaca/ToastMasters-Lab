@@ -1,0 +1,14 @@
+{
+  "name": "tmc-miniprogram",
+  "version": "0.5.0",
+  "description": "TMC Toolkit · 微信小程序端（报名/备稿/投票/议程协作/报告）",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "sync-core": "node build/sync-core.js"
+  },
+  "author": "Altair Li <altairpaca@gmail.com> (https://github.com/Altairpaca)",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}
