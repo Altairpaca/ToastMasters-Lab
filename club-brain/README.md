@@ -26,13 +26,13 @@
 ```bash
 git clone https://github.com/Altairpaca/club-brain.git
 cd club-brain
-node --test test/agenda.test.js test/toolkit.test.js   # 36 项测试
+node --test test/agenda.test.js test/toolkit.test.js test/finance-feedback.test.js   # 51 项测试
 node src/cli.js demo                                     # 跑一遍全部示例，产物写入 out/
 ```
 
 不需要 `npm install`。整个包没有任何依赖。
 
-### 五个命令
+### 七个命令
 
 ```bash
 # 1) 议程体检（可加 --html 出可视化报告）
@@ -49,14 +49,20 @@ node src/cli.js retro examples/retro.sample.json
 
 # 5) DCP 十项目标缺口与预测
 node src/cli.js dcp examples/dcp.sample.json
+
+# 6) 会费对账（台账 vs 流水）
+node src/cli.js dues examples/dues.sample.json
+
+# 7) 点评建议闭环
+node src/cli.js feedback examples/feedback.sample.json
 ```
 
 所有命令都支持 `--json`（机器可读）与 `--md <file>`（写文件）。
-`lint` / `brand` 在发现问题时退出码为 **1**，可直接用于 CI 或本地钩子。
+`lint` / `brand` / `dues` 在发现问题时退出码为 **1**，可直接用于 CI 或本地钩子。
 
 ---
 
-## 五个模块
+## 七个模块
 
 ### 1. `agenda-lint` · 议程规则断言引擎
 
@@ -107,6 +113,18 @@ node src/cli.js dcp examples/dcp.sample.json
 十项目标可配置（默认值仅作示例，**官方口径以当年 DCP 手册为准**）。
 输出每项进度、达成等级（5/7/9 项）、按历史速度预测还需几个月到 Select / President's，
 以及每个缺口对应的具体动作。
+
+### 6. `dues-recon` · 会费对账器
+
+台账与银行/微信流水自动匹配：金额容差 + 日期窗口 + 姓名加权，按得分贪心配对。
+输出「有流水没台账」（优先处理）、「有台账没流水」、每人每期缴费状态（已缴/部分/未缴）、
+收缴率、重复缴费告警。名字对不上会**降权**，避免张冠李戴。
+
+### 7. `feedback-loop` · 点评建议闭环
+
+把点评建议变成可追踪条目，算每人关闭率与类别分布。最关键的一条：
+**同一类别建议出现 ≥2 次仍未关闭**就告警——这说明"提醒不管用，要换练法"。
+同时识别陈旧未关闭项（隔了 N 期），并给出下一次该盯的焦点。
 
 ---
 

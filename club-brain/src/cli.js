@@ -66,6 +66,8 @@ function usage() {
     '  club-brain schedule <input.json> [--json] [--md out.md]',
     '  club-brain retro <input.json> [--json] [--md out.md]',
     '  club-brain dcp <input.json> [--json] [--md out.md]',
+    '  club-brain dues <input.json> [--json] [--md out.md]',
+    '  club-brain feedback <input.json> [--json] [--md out.md]',
     '  club-brain demo [--out <dir>]',
     '',
     '所有命令都可加 --json 输出机器可读结果。有 error 时退出码为 1，可直接用于流水线阻断。',
@@ -119,6 +121,22 @@ const commands = {
     return { code: 0, out: brain.dcpMd(report) };
   },
 
+  dues(file, flags) {
+    const input = readJson(file);
+    const report = brain.reconcile(input);
+    if (flags.md) writeFile(flags.md, brain.duesMd(report));
+    if (flags.json) return { code: report.ok ? 0 : 1, out: JSON.stringify(report, null, 2) };
+    return { code: report.ok ? 0 : 1, out: brain.duesMd(report) };
+  },
+
+  feedback(file, flags) {
+    const input = readJson(file);
+    const report = brain.analyzeFeedback(input);
+    if (flags.md) writeFile(flags.md, brain.feedbackMd(report));
+    if (flags.json) return { code: 0, out: JSON.stringify(report, null, 2) };
+    return { code: 0, out: brain.feedbackMd(report) };
+  },
+
   demo(flags) {
     const outDir = path.resolve(process.cwd(), flags.out || 'out');
     const ex = path.join(__dirname, '..', 'examples');
@@ -129,6 +147,8 @@ const commands = {
       ['schedule.sample.json', 'schedule', null],
       ['retro.sample.json', 'retro', null],
       ['dcp.sample.json', 'dcp', null],
+      ['dues.sample.json', 'dues', null],
+      ['feedback.sample.json', 'feedback', null],
     ];
     jobs.forEach(([file, cmd]) => {
       const input = JSON.parse(fs.readFileSync(path.join(ex, file), 'utf8'));
@@ -154,6 +174,14 @@ const commands = {
         const r = brain.trackDcp(input);
         writeFile(path.join(outDir, 'dcp.md'), brain.dcpMd(r));
         results.push('dcp      → ' + r.achievedCount + '/10，' + r.level);
+      } else if (cmd === 'dues') {
+        const r = brain.reconcile(input);
+        writeFile(path.join(outDir, 'dues.md'), brain.duesMd(r));
+        results.push('dues     → 匹配 ' + r.summary.matched + ' 笔，收缴率 ' + r.summary.collectionRate + '%');
+      } else if (cmd === 'feedback') {
+        const r = brain.analyzeFeedback(input);
+        writeFile(path.join(outDir, 'feedback.md'), brain.feedbackMd(r));
+        results.push('feedback → 关闭率 ' + r.summary.closureRate + '%，' + r.alerts.length + ' 条需干预');
       }
     });
     return { code: 0, out: ['已写入 ' + outDir, ''].concat(results).join('\n') };

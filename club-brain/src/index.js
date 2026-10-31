@@ -13,6 +13,8 @@ const { lintBrand, toMarkdown: brandMd, colorDistance, contrastRatio } = require
 const { schedule, costOf, toMarkdown: scheduleMd } = require('./core/role-scheduler');
 const { buildRetro, toMarkdown: retroMd } = require('./core/meeting-retro');
 const { trackDcp, toMarkdown: dcpMd, DEFAULT_GOALS } = require('./core/dcp-tracker');
+const { reconcile, toMarkdown: duesMd } = require('./core/dues-recon');
+const { analyze: analyzeFeedback, toMarkdown: feedbackMd } = require('./core/feedback-loop');
 const util = require('./core/util');
 
 module.exports = {
@@ -37,6 +39,12 @@ module.exports = {
   trackDcp,
   dcpMd,
   DEFAULT_GOALS,
+  // 财务
+  reconcile,
+  duesMd,
+  // 点评闭环
+  analyzeFeedback,
+  feedbackMd,
   // 工具
   util,
   version: require('../package.json').version,

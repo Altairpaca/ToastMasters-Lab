@@ -1,0 +1,19 @@
+{
+  "members": [
+    { "id": "m1", "name": "怀童", "periods": [{ "period": "2026H2", "amount": 600, "due": "2026-07-31" }] },
+    { "id": "m2", "name": "珊珊", "periods": [{ "period": "2026H2", "amount": 600, "due": "2026-07-31" }] },
+    { "id": "m3", "name": "张三", "periods": [{ "period": "2026H2", "amount": 600, "due": "2026-07-31" }] },
+    { "id": "m4", "name": "李四", "periods": [{ "period": "2026H2", "amount": 600, "due": "2026-07-31" }] }
+  ],
+  "ledger": [
+    { "id": "L1", "name": "怀童", "amount": 600, "date": "2026-07-05", "period": "2026H2" },
+    { "id": "L2", "name": "珊珊", "amount": 600, "date": "2026-07-06", "period": "2026H2" },
+    { "id": "L3", "name": "张三", "amount": 300, "date": "2026-07-10", "period": "2026H2" }
+  ],
+  "bank": [
+    { "id": "B1", "date": "2026-07-05", "amount": 600, "memo": "怀童 会费" },
+    { "id": "B2", "date": "2026-07-07", "amount": 600, "memo": "珊珊" },
+    { "id": "B3", "date": "2026-07-11", "amount": 300, "memo": "张三 转账" },
+    { "id": "B4", "date": "2026-08-01", "amount": 500, "memo": "转账" }
+  ]
+}

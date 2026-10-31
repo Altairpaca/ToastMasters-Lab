@@ -1,0 +1,11 @@
+{
+  "items": [
+    { "id": "F1", "member": "张三", "from": "赵六", "meetingNo": 331, "date": "2026-10-08", "category": "结构", "text": "开头太长，建议 30 秒内进主题", "status": "open" },
+    { "id": "F2", "member": "张三", "from": "怡欣", "meetingNo": 333, "date": "2026-10-22", "category": "结构", "text": "三段之间缺过渡", "status": "open" },
+    { "id": "F3", "member": "张三", "from": "珊珊", "meetingNo": 335, "date": "2026-11-05", "category": "结构", "text": "结尾没有回扣开头", "status": "open" },
+    { "id": "F4", "member": "张三", "from": "兰辛", "meetingNo": 335, "date": "2026-11-05", "category": "语速", "text": "紧张时语速加快", "status": "open" },
+    { "id": "F5", "member": "李四", "from": "怀童", "meetingNo": 332, "date": "2026-10-15", "category": "眼神", "text": "只看一个方向", "status": "done" },
+    { "id": "F6", "member": "李四", "from": "赵六", "meetingNo": 335, "date": "2026-11-05", "category": "手势", "text": "手势与内容不匹配", "status": "open" },
+    { "id": "F7", "member": "王五", "from": "珊珊", "meetingNo": 334, "date": "2026-10-29", "category": "赘词", "text": "「然后」过多", "status": "done" }
+  ]
+}
