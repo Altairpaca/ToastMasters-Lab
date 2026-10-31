@@ -15,6 +15,7 @@ const { buildRetro, toMarkdown: retroMd } = require('./core/meeting-retro');
 const { trackDcp, toMarkdown: dcpMd, DEFAULT_GOALS } = require('./core/dcp-tracker');
 const { reconcile, toMarkdown: duesMd } = require('./core/dues-recon');
 const { analyze: analyzeFeedback, toMarkdown: feedbackMd } = require('./core/feedback-loop');
+const { buildSurveyDraft, toWjxJsonl, toMarkdown: surveyMd } = require('./core/survey-draft');
 const util = require('./core/util');
 
 module.exports = {
@@ -45,6 +46,10 @@ module.exports = {
   // 点评闭环
   analyzeFeedback,
   feedbackMd,
+  // 问卷草稿
+  buildSurveyDraft,
+  toWjxJsonl,
+  surveyMd,
   // 工具
   util,
   version: require('../package.json').version,
