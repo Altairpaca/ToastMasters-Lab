@@ -16,6 +16,7 @@ const { trackDcp, toMarkdown: dcpMd, DEFAULT_GOALS } = require('./core/dcp-track
 const { reconcile, toMarkdown: duesMd } = require('./core/dues-recon');
 const { analyze: analyzeFeedback, toMarkdown: feedbackMd } = require('./core/feedback-loop');
 const { buildSurveyDraft, toWjxJsonl, toMarkdown: surveyMd } = require('./core/survey-draft');
+const { buildProfiles, toMarkdown: profileMd } = require('./core/member-profile');
 const util = require('./core/util');
 
 module.exports = {
@@ -50,6 +51,9 @@ module.exports = {
   buildSurveyDraft,
   toWjxJsonl,
   surveyMd,
+  // 会员档案
+  buildProfiles,
+  profileMd,
   // 工具
   util,
   version: require('../package.json').version,

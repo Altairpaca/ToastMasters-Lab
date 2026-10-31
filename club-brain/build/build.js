@@ -25,6 +25,8 @@ const CORE = [
   ['dues-recon', 'src/core/dues-recon.js'],
   ['feedback-loop', 'src/core/feedback-loop.js'],
   ['survey-draft', 'src/core/survey-draft.js'],
+  ['meeting-ops', 'src/core/meeting-ops.js'],
+  ['member-profile', 'src/core/member-profile.js'],
 ];
 
 const APP = [
@@ -32,6 +34,7 @@ const APP = [
   'app/ui/chart.js',
   'app/seed.js',
   'app/state.js',
+  'app/sync.js',
   'app/views/dashboard.js',
   'app/views/agenda.js',
   'app/views/live.js',
@@ -86,6 +89,9 @@ function buildJs() {
     '  buildSurveyDraft: CC.__core["survey-draft"].buildSurveyDraft,',
     '  surveyJsonl: CC.__core["survey-draft"].toWjxJsonl,',
     '  surveyMd: CC.__core["survey-draft"].toMarkdown,',
+    '  ops: CC.__core["meeting-ops"],',
+    '  buildProfiles: CC.__core["member-profile"].buildProfiles,',
+    '  profileMd: CC.__core["member-profile"].toMarkdown,',
     '});',
   ].join('\n'));
 

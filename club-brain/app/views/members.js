@@ -16,6 +16,7 @@
     const m = S.activeMeeting();
 
     const page = h('div', { class: 'grid', style: { gap: '14px' } });
+    const profiles = CC.core.buildProfiles({ members: data.members, meetings: data.meetings });
 
     /* ---------- 会员台账 ---------- */
     const memCard = h('div', { class: 'card flush' },
@@ -72,15 +73,40 @@
               },
             },
           }))),
-          h('td', { class: 'tight' }, h('button', {
-            class: 'btn icon sm ghost', on: {
-              click: () => S.commit((d) => { d.members = d.members.filter((x) => x.id !== mem.id); }),
-            },
-          }, icon('trash')))
+          h('td', { class: 'tight' },
+            h('button', {
+              class: 'btn sm ghost', title: '成长档案',
+              on: { click: () => openProfile(profiles.profiles.find((p) => p.name === mem.name) || null, mem) },
+            }, '档案'),
+            h('button', {
+              class: 'btn icon sm ghost', on: {
+                click: () => S.commit((d) => { d.members = d.members.filter((x) => x.id !== mem.id); }),
+              },
+            }, icon('trash')))
         )))
       )
     );
     page.appendChild(memCard);
+
+    const c = profiles.club;
+    page.appendChild(h('div', { class: 'card' },
+      h('div', { class: 'row', style: { marginBottom: '10px' } },
+        h('h3', { style: { margin: 0 } }, '成长档案'),
+        h('span', { class: 'tag' }, c.meetings + ' 场 · ' + c.activeMembers + ' 位活跃'),
+        h('div', { class: 'grow' }),
+        h('button', {
+          class: 'btn sm', on: {
+            click: () => download('profiles.md', CC.core.profileMd(profiles), 'text/markdown'),
+          },
+        }, '导出全量')
+      ),
+      h('div', { class: 'row wrap', style: { gap: '18px' } },
+        c.bestOnTime ? h('div', { class: 'small' }, '最守时　', h('b', null, c.bestOnTime.name), ' ', h('span', { class: 'tag green' }, c.bestOnTime.rate + '%')) : null,
+        c.worstOnTime ? h('div', { class: 'small' }, '最需注意　', h('b', null, c.worstOnTime.name), ' ', h('span', { class: 'tag yellow' }, c.worstOnTime.rate + '%')) : null,
+        c.mostFillers ? h('div', { class: 'small' }, '赘词最多　', h('b', null, c.mostFillers.name), ' ', h('span', { class: 'tag red' }, c.mostFillers.total + ' 次')) : null,
+        c.mostVersatile ? h('div', { class: 'small' }, '角色最广　', h('b', null, c.mostVersatile.name), ' ', h('span', { class: 'tag blue' }, c.mostVersatile.roles + ' 类')) : null
+      )
+    ));
 
     /* ---------- 排班 ---------- */
     const candidates = S.meetings().filter((x) => x.status !== 'done').slice(0, 4);
@@ -237,6 +263,42 @@
         )
       )
     );
+  }
+
+  function openProfile(p, mem) {
+    if (!p) {
+      toast('这位会员还没有参与记录', '');
+      return;
+    }
+    const cell = (k, v) => h('div', { class: 'kv', style: { display: 'flex', justifyContent: 'space-between', padding: '3px 0', fontSize: '13px' } },
+      h('span', { class: 'muted' }, k), h('b', null, v));
+    CC.dom.modal({
+      title: mem.name + ' · 成长档案',
+      sub: (p.firstDate || '—') + ' ~ ' + (p.lastDate || '—') + '　·　' + p.meetings + ' 场',
+      body: h('div', { class: 'grid', style: { gridTemplateColumns: '1fr 1fr', gap: '18px' } },
+        h('div', null,
+          cell('参与场次', p.meetings + ' 场'),
+          cell('备稿 / 点评', p.speeches + ' / ' + p.evaluations),
+          cell('计时段数', p.timedSegments + ' 段'),
+          cell('准时率', p.onTimeRate == null ? '—' : p.onTimeRate + '%'),
+          cell('平均偏差', p.avgDelta == null ? '—' : (p.avgDelta > 0 ? '+' : '') + p.avgDelta + ' 分')
+        ),
+        h('div', null,
+          cell('赘词总数', p.ahTotal + ' 次'),
+          cell('每分钟', p.ahPerMinute == null ? '—' : p.ahPerMinute + ' 次'),
+          cell('高频赘词', p.topWord ? p.topWord.word + ' ×' + p.topWord.count : '—'),
+          cell('角色种类', p.distinctRoles + ' 类')
+        ),
+        h('div', { style: { gridColumn: '1 / -1' } },
+          h('div', { class: 'small muted', style: { marginBottom: '4px' } }, '角色分布'),
+          h('div', { class: 'chips' }, (p.roles || []).map((r) => h('span', { class: 'tag' }, r.role + ' ×' + r.count)))
+        ),
+        h('div', { style: { gridColumn: '1 / -1', background: 'var(--panel-2)', border: '1px solid var(--line)', borderRadius: '9px', padding: '10px 12px' } },
+          h('div', { class: 'small muted', style: { marginBottom: '3px' } }, '下一步焦点'),
+          h('div', null, h('b', { style: { color: 'var(--gold)' } }, p.focus + '：'), p.focusReason)
+        )
+      ),
+    });
   }
 
   CC.views.members = { render };

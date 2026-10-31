@@ -23,13 +23,15 @@
 ## 快速开始
 
 ```bash
-# 方式一：直接打开（推荐给非技术同学）
+# 方式一：单机（一个人用）
 #   双击 dist/club-console.html
 
-# 方式二：从源码构建
+# 方式二：局域网协同（会中用：笔记本投屏 + 手机遥控）
+npm run lan            # 构建并启动，控制台会打印手机访问地址
+
+# 方式三：从源码构建 + 全量自检
 npm run build          # 生成 dist/club-console.html
-npm test               # 62 项内核单元测试
-npm run test:e2e       # 26 项真实 DOM 冒烟测试（jsdom）
+npm run test:all       # 82 内核 + 10 服务端 + 30 端到端断言
 ```
 
 不需要 `npm install`，没有任何第三方依赖。
@@ -45,7 +47,26 @@ npm run test:e2e       # 26 项真实 DOM 冒烟测试（jsdom）
 | **会中** | 大计时器、三色灯、流程队列、哼哈计数、语法官记录 | 只改 DOM 文本，不重渲染，计时不闪 |
 | **投屏** | 给全场看的大屏：环节名、倒计时、三色灯、下一项 | 独立视图，按 `P` 一键切换 |
 | **复盘** | 准时度、环节偏差、个人表现、自动结论、上期对比 | 三官数据自动变成结构化档案 |
-| **会员与 DCP** | 会员台账（含角色能力矩阵）、排班求解、DCP 十项目标 | 排班给依据，DCP 给预测和动作 |
+| **会员与 DCP** | 会员台账（含角色能力矩阵）、**成长档案**、排班求解、DCP 十项目标 | 档案回答"这人在变好还是变差"，不只看单场 |
+
+---
+
+## 局域网协同（会中多端）
+
+```
+        ┌──────────────── 局域网（不出本网、无云） ────────────────┐
+        │                                                          │
+  笔记本 / 投屏                 本地 Node 服务                手机 / 三官遥控
+  club-console.html  ←──SSE──  server.js  ──POST /api/command──→  /remote
+        │                          │                               │
+        └──── POST /api/state ─────┴── data/state.json（落盘） ─────┘
+```
+
+- `npm run lan` 启动后，控制台会打印 `http://<内网IP>:8787/remote`，手机连同一个 Wi-Fi 打开即可。
+- 手机端点「下一项 / 暂停 / 哼哈 +1」，笔记本上的投屏与计时**同步变化**。
+- 三端共用同一套会中语义（`src/core/meeting-ops.js`），不存在"手机算的时间跟电脑不一样"。
+- 服务端只做三件事：持有唯一状态、广播、落盘。没有账号、没有外网依赖。
+- 不启动服务时，双击 HTML 就是纯单机模式，功能完全一样，只是不同步。
 
 ---
 
@@ -101,6 +122,8 @@ npm run test:e2e       # 26 项真实 DOM 冒烟测试（jsdom）
 | `dues-recon` | 台账 × 流水匹配（金额容差 + 日期窗口 + 姓名加权）、双向未匹配、收缴率 |
 | `feedback-loop` | 点评建议闭环：重复建议 ≥2 次告警、关闭率、陈旧项 |
 | `survey-draft` | 从议程生成投票问卷草稿（名额约束 + 排除待确认），可转问卷星 JSONL |
+| `meeting-ops` | 会中操作的单一语义：开始/暂停/完成/回退/结束、哼哈与语法记录、命令路由（三端共用） |
+| `member-profile` | 跨期会员档案：参与度、准时率、赘词率、角色广度、下一步焦点 |
 
 ### 命令行
 
@@ -113,6 +136,8 @@ node src/cli.js dcp examples/dcp.sample.json
 node src/cli.js dues examples/dues.sample.json
 node src/cli.js feedback examples/feedback.sample.json
 node src/cli.js survey examples/meeting.sample.json --jsonl out/survey.jsonl
+node src/cli.js profile ~/backup.json --md out/profiles.md
+node server/server.js --port 8787        # 局域网服务
 ```
 
 `lint` / `brand` / `dues` 有问题时退出码为 **1**，可直接接 CI 或本地钩子。
@@ -149,8 +174,12 @@ app/
   ui/chart.js      纯 SVG 甘特图与对比条
   state.js         单一事实源 + 撤销栈 + 持久化
   seed.js          示例数据
+  sync.js          局域网同步（SSE + 防抖推送，file:// 下自动退化为单机）
   views/*.js       六个视图
   app.js           路由、快捷键、顶栏与状态栏
+server/
+  server.js        零依赖会中服务：状态仓库 + SSE 广播 + 命令路由 + 落盘
+  remote.html      手机遥控页（三官按一下就能记）
 build/build.js     把内核 + 视图 + CSS 内联成一个 HTML
 dist/              产物
 ```
@@ -160,9 +189,9 @@ dist/              产物
 
 ## 路线图
 
-- **v2.1**：议程多期连排、替班市场、决议台账
-- **v2.2**：内容矩阵（一稿多平台 + 品牌自检面板）
-- **v2.3**：跨设备同步（可选的本地局域网服务，仍不依赖云）
+- **v2.2**：内容矩阵（一稿多平台 + 品牌自检面板）、议程多期连排、替班市场
+- **v2.3**：决议台账与年度报告、跨俱乐部联合排班
+- 已完成：v2.1 局域网协同（SSE）+ 手机三官遥控 + 跨期成长档案
 
 ## 免责声明
 

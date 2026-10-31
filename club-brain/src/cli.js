@@ -69,6 +69,7 @@ function usage() {
     '  club-brain dues <input.json> [--json] [--md out.md]',
     '  club-brain feedback <input.json> [--json] [--md out.md]',
     '  club-brain survey <meeting.json> [--md out.md] [--jsonl out.jsonl]',
+    '  club-brain profile <state.json> [--json] [--md out.md]',
     '  club-brain demo [--out <dir>]',
     '',
     '所有命令都可加 --json 输出机器可读结果。有 error 时退出码为 1，可直接用于流水线阻断。',
@@ -128,6 +129,14 @@ const commands = {
     if (flags.md) writeFile(flags.md, brain.duesMd(report));
     if (flags.json) return { code: report.ok ? 0 : 1, out: JSON.stringify(report, null, 2) };
     return { code: report.ok ? 0 : 1, out: brain.duesMd(report) };
+  },
+
+  profile(file, flags) {
+    const input = readJson(file);
+    const result = brain.buildProfiles(input);
+    if (flags.md) writeFile(flags.md, brain.profileMd(result));
+    if (flags.json) return { code: 0, out: JSON.stringify(result, null, 2) };
+    return { code: 0, out: brain.profileMd(result) };
   },
 
   survey(file, flags) {

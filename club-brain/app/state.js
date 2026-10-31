@@ -57,6 +57,7 @@
     mutator(data);
     persist();
     if (!o.silent) notify();
+    if (!o.fromRemote && CC.sync && CC.sync.push) CC.sync.push();
   }
 
   function undo() {
@@ -266,168 +267,48 @@
     });
   }
 
-  /* ---------------- 会中 ---------------- */
+  /* ---------------- 会中（委托给 CC.core.ops，三端共用） ---------------- */
 
   function emptyRecords() {
-    return { timing: [], ah: {}, grammar: { good: [], issues: [] }, ahByWord: {} };
+    return { timing: [], ah: {}, grammar: { good: [], issues: [] } };
   }
 
-  function ensureLive(meeting) {
-    if (!meeting) return null;
-    if (!meeting.live) {
-      meeting.live = { index: 0, elapsedMs: 0, runningSince: null, startedAt: Date.now(), log: [] };
-    }
-    return meeting.live;
-  }
+  function ops() { return CC.core.ops; }
 
-  function liveElapsedSeconds(meeting) {
-    const l = meeting && meeting.live;
-    if (!l) return 0;
-    const running = l.runningSince ? Date.now() - l.runningSince : 0;
-    return (l.elapsedMs + running) / 1000;
-  }
-
-  function liveStart(meetingId) {
+  function withMeeting(meetingId, fn, opts) {
     commit((d) => {
       const m = d.meetings.find((x) => x.id === meetingId);
       if (!m) return;
-      const l = ensureLive(m);
-      m.status = 'live';
-      if (!l.runningSince) {
-        l.runningSince = Date.now();
-        l.log.push({ t: Date.now(), text: '开始计时：' + (m.segments[l.index] ? m.segments[l.index].name : '') });
-      }
-    });
+      fn(m, d);
+      if (m.status === 'done') ensureRetro(m);
+    }, opts);
   }
 
-  function liveToggle(meetingId) {
-    commit((d) => {
-      const m = d.meetings.find((x) => x.id === meetingId);
-      const l = m && ensureLive(m);
-      if (!l) return;
-      if (l.runningSince) {
-        l.elapsedMs += Date.now() - l.runningSince;
-        l.runningSince = null;
-      } else {
-        l.runningSince = Date.now();
-      }
-    }, { noUndo: true });
-  }
-
-  function liveReset(meetingId) {
-    commit((d) => {
-      const m = d.meetings.find((x) => x.id === meetingId);
-      const l = m && ensureLive(m);
-      if (l) { l.elapsedMs = 0; l.runningSince = null; }
-    }, { noUndo: true });
-  }
-
-  /** 结束当前环节：写入记录、推进到下一环节 */
+  function ensureLive(meeting) { return meeting ? ops().ensureLive(meeting) : null; }
+  function liveElapsedSeconds(meeting) { return ops().elapsedSeconds(meeting); }
+  function liveStart(meetingId) { withMeeting(meetingId, (m) => ops().start(m)); }
+  function liveToggle(meetingId) { withMeeting(meetingId, (m) => ops().toggle(m), { noUndo: true }); }
+  function liveReset(meetingId) { withMeeting(meetingId, (m) => ops().reset(m), { noUndo: true }); }
   function liveFinish(meetingId, opts) {
-    commit((d) => {
-      const m = d.meetings.find((x) => x.id === meetingId);
-      const l = m && ensureLive(m);
-      if (!m || !l) return;
-      const seg = m.segments[l.index];
-      if (!seg) return;
-      const elapsed = liveElapsedSeconds(m);
-      const actualMin = Number((elapsed / 60).toFixed(2));
-      const record = {
-        id: CC.dom.uid('tm'),
-        segment: seg.name,
-        speaker: seg.owner || '',
-        planned: Number(seg.minutes) || 0,
-        actual: actualMin,
-        status: actualMin > seg.minutes ? 'over' : actualMin === 0 ? 'skip' : 'ok',
-      };
-      const exist = m.records.timing.findIndex((t) => t.segmentId === seg.id);
-      if (exist >= 0) m.records.timing[exist] = { ...record, segmentId: seg.id };
-      else m.records.timing.push({ ...record, segmentId: seg.id });
-      l.log.push({ t: Date.now(), text: '完成：' + seg.name + ' ' + actualMin.toFixed(1) + '/' + seg.minutes + ' 分' });
-      l.elapsedMs = 0;
-      l.runningSince = null;
-      l.index = Math.min(l.index + 1, m.segments.length - 1);
-      if (opts && opts.last) l.runningSince = null;
-    });
+    withMeeting(meetingId, (m) => ops().finish(m, undefined, opts || {}));
   }
-
-  function livePrev(meetingId) {
-    commit((d) => {
-      const m = d.meetings.find((x) => x.id === meetingId);
-      const l = m && ensureLive(m);
-      if (!l) return;
-      l.index = Math.max(0, l.index - 1);
-      l.elapsedMs = 0;
-      l.runningSince = null;
-    }, { noUndo: true });
-  }
-
+  function livePrev(meetingId) { withMeeting(meetingId, (m) => ops().prev(m), { noUndo: true }); }
   function liveNext(meetingId) { liveFinish(meetingId); }
-
-  function liveEnd(meetingId) {
-    commit((d) => {
-      const m = d.meetings.find((x) => x.id === meetingId);
-      if (!m) return;
-      const l = ensureLive(m);
-      const elapsed = liveElapsedSeconds(m);
-      const seg = m.segments[l.index];
-      if (seg && elapsed > 5) {
-        const actualMin = Number((elapsed / 60).toFixed(2));
-        const exist = m.records.timing.findIndex((t) => t.segmentId === seg.id);
-        const rec = {
-          id: CC.dom.uid('tm'), segmentId: seg.id, segment: seg.name, speaker: seg.owner || '',
-          planned: Number(seg.minutes) || 0, actual: actualMin,
-          status: actualMin > seg.minutes ? 'over' : 'ok',
-        };
-        if (exist >= 0) m.records.timing[exist] = rec; else m.records.timing.push(rec);
-      }
-      l.runningSince = null;
-      m.status = 'done';
-      m.endedAt = Date.now();
-      m.retro = null;
-      ensureRetro(m);
-    });
-  }
+  function liveEnd(meetingId) { withMeeting(meetingId, (m) => ops().end(m)); }
 
   /* ---------------- 三官记录 ---------------- */
 
   function addAh(meetingId, person, word) {
-    commit((d) => {
-      const m = d.meetings.find((x) => x.id === meetingId);
-      if (!m) return;
-      const key = person || '（未标注）';
-      m.records.ah[key] = m.records.ah[key] || {};
-      m.records.ah[key][word] = (m.records.ah[key][word] || 0) + 1;
-    }, { noUndo: true });
+    withMeeting(meetingId, (m) => ops().addAh(m, person, word, 1), { noUndo: true });
   }
-
   function removeAh(meetingId, person, word) {
-    commit((d) => {
-      const m = d.meetings.find((x) => x.id === meetingId);
-      if (!m) return;
-      const key = person || '（未标注）';
-      if (m.records.ah[key] && m.records.ah[key][word]) {
-        m.records.ah[key][word] -= 1;
-        if (m.records.ah[key][word] <= 0) delete m.records.ah[key][word];
-      }
-    }, { noUndo: true });
+    withMeeting(meetingId, (m) => ops().addAh(m, person, word, -1), { noUndo: true });
   }
-
   function addGrammar(meetingId, kind, payload) {
-    commit((d) => {
-      const m = d.meetings.find((x) => x.id === meetingId);
-      if (!m) return;
-      if (kind === 'good') m.records.grammar.good.push(payload);
-      else m.records.grammar.issues.push(payload);
-    });
+    withMeeting(meetingId, (m) => ops().addGrammar(m, kind, payload));
   }
-
   function removeGrammar(meetingId, kind, index) {
-    commit((d) => {
-      const m = d.meetings.find((x) => x.id === meetingId);
-      if (!m) return;
-      m.records.grammar[kind].splice(index, 1);
-    });
+    withMeeting(meetingId, (m) => ops().removeGrammar(m, kind, index));
   }
 
   /* ---------------- 复盘 ---------------- */
@@ -495,6 +376,14 @@
     return CC.core.buildSurveyDraft(meeting, { includeTableTopics: true, optionalAdvice: true });
   }
 
+  function replaceData(next) {
+    data = next;
+    data.version = 2;
+    CC.state.data = data;
+    persist();
+    notify();
+  }
+
   function fullJson() { return JSON.stringify(data, null, 2); }
 
   function importJson(text) {
@@ -551,6 +440,7 @@
     addSpeech, updateSpeech, removeSpeech,
     addNote, removeNote,
     ensureLive, liveElapsedSeconds, liveStart, liveToggle, liveReset, liveFinish, livePrev, liveNext, liveEnd,
+    replaceData, withMeeting,
     addAh, removeAh, addGrammar, removeGrammar,
     ensureRetro, timerCsv, sheetMarkdown, surveyDraft, fullJson, importJson, resetDemo,
     allPeople, weekdayZh, emptyRecords,

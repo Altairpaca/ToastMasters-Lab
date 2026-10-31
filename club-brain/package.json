@@ -1,6 +1,6 @@
 {
   "name": "club-brain",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Club Console — an offline, application-grade console for Toastmasters club operations: agenda linting, live meeting cockpit, projection, retro, scheduling and DCP tracking.",
   "keywords": [
     "toastmasters",
@@ -21,6 +21,7 @@
     "src",
     "app",
     "build",
+    "server",
     "dist",
     "examples",
     "README.md",
@@ -28,10 +29,13 @@
   ],
   "scripts": {
     "build": "node build/build.js",
-    "test": "node --test test/agenda.test.js test/toolkit.test.js test/finance-feedback.test.js test/survey.test.js",
+    "serve": "node server/server.js",
+    "lan": "node build/build.js && node server/server.js",
+    "test": "node --test test/agenda.test.js test/toolkit.test.js test/finance-feedback.test.js test/survey.test.js test/ops-profile.test.js",
+    "test:server": "node --test test/server.test.mjs",
     "test:e2e": "node test/smoke.mjs",
-    "demo": "node src/cli.js demo",
-    "start": "node build/build.js"
+    "test:all": "npm test && npm run test:server && npm run test:e2e",
+    "demo": "node src/cli.js demo"
   },
   "engines": {
     "node": ">=18"

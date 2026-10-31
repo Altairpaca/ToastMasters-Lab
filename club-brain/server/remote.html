@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c0e12">
+<title>三官遥控 · Club Console</title>
+<style>
+:root{--bg:#0c0e12;--panel:#161a21;--panel2:#1b2028;--line:#262c36;--fg:#e8eaee;--fg2:#a7afbb;--fg3:#6f7885;
+--green:#3fb950;--yellow:#d29922;--red:#f85149;--brand:#b23a52}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+display:flex;flex-direction:column;overflow:hidden}
+header{padding:14px 16px 8px;display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--red)}
+.dot.on{background:var(--green);box-shadow:0 0 8px #3fb95088}
+.hd{flex:1;min-width:0}
+.hd .t{font-size:13px;color:var(--fg2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd .s{font-size:11px;color:var(--fg3)}
+main{flex:1;display:flex;flex-direction:column;padding:0 16px 16px;gap:10px;overflow:auto}
+.seg{font-size:17px;color:var(--fg2);text-align:center;margin-top:4px;
+white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.time{font-family:ui-monospace,Consolas,monospace;font-size:clamp(64px,26vw,120px);font-weight:800;
+text-align:center;line-height:1;letter-spacing:-4px;font-variant-numeric:tabular-nums;transition:color .2s}
+.time.green{color:var(--green)}.time.yellow{color:var(--yellow)}.time.red{color:var(--red)}
+.time.over{color:#ff5c55;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.55}}
+.lights{display:flex;gap:6px;justify-content:center;margin:2px 0 6px}
+.light{width:34px;height:8px;border-radius:6px;background:#232a34}
+.light.on.green{background:var(--green)}.light.on.yellow{background:var(--yellow)}.light.on.red{background:var(--red)}
+.btns{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+button{font:inherit;color:inherit;border:1px solid var(--line);background:var(--panel);border-radius:12px;
+padding:14px 10px;font-size:15px;cursor:pointer;transition:transform .05s,background .15s}
+button:active{transform:scale(.97)}
+button.primary{background:linear-gradient(180deg,#c14a62,var(--brand));border-color:#c14a62;color:#fff;font-weight:600}
+button.wide{grid-column:span 2}
+button.ghost{background:transparent;color:var(--fg2)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.card h4{margin:0 0 8px;font-size:12px;color:var(--fg3);font-weight:500;letter-spacing:.4px}
+.person{margin-bottom:9px}
+.person:last-child{margin-bottom:0}
+.pname{font-size:12.5px;color:var(--fg2);margin-bottom:5px;display:flex;justify-content:space-between}
+.pname b{color:var(--fg);font-variant-numeric:tabular-nums}
+.words{display:flex;gap:6px;flex-wrap:wrap}
+.w{background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:13px}
+.w.hit{border-color:var(--brand);color:#ffb3c0}
+input{width:100%;background:#0f1319;border:1px solid var(--line);border-radius:10px;padding:11px 12px;color:inherit;font:inherit}
+.row{display:flex;gap:8px;align-items:center}
+.hint{text-align:center;color:var(--fg3);font-size:12px;padding:6px}
+</style>
+</head>
+<body>
+<header>
+  <div class="dot" id="dot"></div>
+  <div class="hd">
+    <div class="t" id="mtitle">连接中…</div>
+    <div class="s" id="mmeta"></div>
+  </div>
+</header>
+<main>
+  <div class="seg" id="seg">—</div>
+  <div class="time" id="time">00:00</div>
+  <div class="lights">
+    <div class="light green" data-l="green"></div>
+    <div class="light yellow" data-l="yellow"></div>
+    <div class="light red" data-l="red"></div>
+  </div>
+  <div class="btns">
+    <button class="primary" id="toggle">开始</button>
+    <button id="next">下一项</button>
+    <button class="ghost" id="prev">上一项</button>
+    <button class="ghost" id="reset">归零</button>
+    <button class="wide ghost" id="end">结束本场</button>
+  </div>
+  <div class="card"><h4>哼哈官 · 点一下 +1</h4><div id="people"></div></div>
+  <div class="card"><h4>语法官</h4>
+    <div class="row"><input id="good" placeholder="好词好句，回车记下"><button id="addgood">记</button></div>
+    <div class="row" style="margin-top:8px"><input id="issue" placeholder="问题，回车记下"><button id="addissue">记</button></div>
+  </div>
+  <div class="hint" id="hint">数据只在局域网内传输</div>
+</main>
+<script>
+(function(){
+  var state=null, meetingId=null, connected=false;
+  var $=function(id){return document.getElementById(id)};
+
+  function api(path,body){
+    return fetch(path,{method:body?'POST':'GET',headers:{'content-type':'application/json'},
+      body:body?JSON.stringify(body):undefined,cache:'no-store'}).then(function(r){return r.json()});
+  }
+  function cmd(type,extra){
+    if(!meetingId) return;
+    var body=Object.assign({type:type,meetingId:meetingId},extra||{});
+    api('api/command',body).catch(function(){setConn(false)});
+  }
+  function setConn(on){
+    connected=on; $('dot').className='dot'+(on?' on':'');
+    $('hint').textContent=on?'局域网已连接 · 数据不出本网':'断开，正在重连…';
+  }
+  function meeting(){
+    if(!state) return null;
+    return state.meetings.filter(function(m){return m.id===meetingId})[0]||null;
+  }
+  function elapsed(m){
+    var l=m&&m.live; if(!l) return 0;
+    var run=l.runningSince?Date.now()-l.runningSince:0;
+    return (l.elapsedMs+run)/1000;
+  }
+  function fmt(s){s=Math.max(0,Math.round(s));var m=Math.floor(s/60);return ('0'+m).slice(-2)+':'+('0'+(s%60)).slice(-2)}
+
+  function paint(){
+    var m=meeting(); if(!m){return}
+    var l=m.live; if(!l){$('seg').textContent='尚未开始';return}
+    var seg=m.segments[l.index]||null;
+    var planned=seg?Number(seg.minutes)*60:0;
+    var e=elapsed(m), remain=planned-e, cls='', text;
+    if(remain>=0){text=fmt(remain);var r=planned?e/planned:0;
+      if(r>=1)cls='red';else if(r>=.85)cls='yellow';else if(r>=.7)cls='green';}
+    else {text='+'+fmt(-remain);cls='over'}
+    $('time').textContent=text; $('time').className='time '+cls;
+    $('seg').textContent=seg?(seg.name+(seg.owner?' · '+seg.owner:'')):'—';
+    $('toggle').textContent=l.runningSince?'暂停':'开始';
+    document.querySelectorAll('.light').forEach(function(n){
+      var c=n.dataset.l;
+      var on=(c==='green'&&cls==='green')||(c==='yellow'&&cls==='yellow')||(c==='red'&&(cls==='red'||cls==='over'));
+      n.classList.toggle('on',on);
+    });
+    document.title=text+' · '+(seg?seg.name:'');
+  }
+
+  function renderPeople(){
+    var m=meeting(); if(!m) return;
+    var people={}, set=[];
+    m.segments.forEach(function(s){if(s.owner&&!people[s.owner]){people[s.owner]=1;set.push(s.owner)}});
+    m.speeches.forEach(function(s){
+      [s.speaker,s.evaluator].forEach(function(p){if(p&&!people[p]){people[p]=1;set.push(p)}});
+    });
+    var words=(state.counterWords||['嗯','那个','然后']).slice(0,4);
+    var html='';
+    set.forEach(function(p){
+      var counts=(m.records&&m.records.ah&&m.records.ah[p])||{};
+      var total=Object.keys(counts).reduce(function(a,k){return a+counts[k]},0);
+      html+='<div class="person"><div class="pname"><span>'+p+'</span><b>'+total+'</b></div><div class="words">';
+      words.forEach(function(w){
+        var c=counts[w]||0;
+        html+='<button class="w'+(c?' hit':'')+'" data-p="'+p+'" data-w="'+w+'">'+w+(c?' ×'+c:'')+'</button>';
+      });
+      html+='</div></div>';
+    });
+    $('people').innerHTML=html||'<div class="hint">议程里还没有人员</div>';
+    $('people').querySelectorAll('.w').forEach(function(b){
+      b.onclick=function(){cmd('ah.add',{person:b.dataset.p,word:b.dataset.w,delta:1})};
+      b.oncontextmenu=function(e){e.preventDefault();cmd('ah.add',{person:b.dataset.p,word:b.dataset.w,delta:-1})};
+    });
+  }
+
+  function apply(next){
+    state=next;
+    if(!meetingId||!state.meetings.some(function(m){return m.id===meetingId})){
+      meetingId=state.activeMeetingId||(state.meetings[0]&&state.meetings[0].id);
+    }
+    var m=meeting();
+    if(m){
+      $('mtitle').textContent=(state.club?state.club.name:'')+' · 第 '+m.meetingNo+' 次';
+      $('mmeta').textContent=m.date+'　'+m.start+'–'+m.end+'　'+({draft:'起草',locked:'定稿',live:'进行中',done:'已归档'}[m.status]||m.status);
+    }
+    renderPeople(); paint();
+  }
+
+  $('toggle').onclick=function(){cmd('live.toggle')};
+  $('next').onclick=function(){cmd('live.finish')};
+  $('prev').onclick=function(){cmd('live.prev')};
+  $('reset').onclick=function(){cmd('live.reset')};
+  $('end').onclick=function(){if(confirm('结束本场？电脑端会生成复盘'))cmd('live.end')};
+  $('addgood').onclick=function(){var v=$('good').value.trim();if(!v)return;cmd('grammar.add',{kind:'good',payload:v});$('good').value=''};
+  $('addissue').onclick=function(){var v=$('issue').value.trim();if(!v)return;cmd('grammar.add',{kind:'issues',payload:{type:'用词',text:v,fix:''}});$('issue').value=''};
+  $('good').addEventListener('keydown',function(e){if(e.key==='Enter')$('addgood').click()});
+  $('issue').addEventListener('keydown',function(e){if(e.key==='Enter')$('addissue').click()});
+
+  api('api/state').then(function(r){
+    if(r&&r.state) apply(r.state); else $('seg').textContent='等待电脑端推送数据';
+  }).catch(function(){setConn(false)});
+
+  var es=new EventSource('api/events');
+  es.onopen=function(){setConn(true)};
+  es.onmessage=function(ev){
+    try{var msg=JSON.parse(ev.data);if(msg.type==='state'&&msg.state)apply(msg.state)}catch(e){}
+  };
+  es.onerror=function(){setConn(false)};
+  setInterval(paint,250);
+})();
+</script>
+</body>
+</html>

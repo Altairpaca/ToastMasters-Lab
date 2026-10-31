@@ -91,6 +91,11 @@
       ));
     }
     statusEl.appendChild(h('div', { class: 'spacer' }));
+    const mode = CC.sync ? CC.sync.status() : 'local';
+    const modeText = { lan: '局域网同步', reconnecting: '同步中断·重连中', local: '单机模式' }[mode] || '单机模式';
+    statusEl.appendChild(h('span', { style: { color: mode === 'lan' ? 'var(--ok)' : mode === 'reconnecting' ? 'var(--warn)' : 'inherit' } },
+      '● ' + modeText));
+    statusEl.appendChild(h('span', { class: 'sep' }, '|'));
     statusEl.appendChild(h('span', null, S.storageOk() ? '本地存储已启用' : '本地存储不可用（仅内存）'));
     statusEl.appendChild(h('span', { class: 'sep' }, '|'));
     statusEl.appendChild(h('span', null, '撤销栈 ' + (S.canUndo() ? '可用' : '空')));
@@ -195,6 +200,10 @@
     bindKeys();
     CC.state.subscribe(() => render());
     render();
+    if (CC.sync) {
+      CC.sync.onStatus(() => render());
+      CC.sync.init();
+    }
     if (!CC.state.storageOk()) {
       toast('浏览器禁用了本地存储，本次改动不会保存。请用 Chrome/Edge 打开，或改用「备份」导出。', 'err');
     }
