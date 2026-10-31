@@ -1,0 +1,49 @@
+{
+  "schema": "meeting/v1",
+  "club": "南沙港湾头马俱乐部",
+  "meetingNo": 336,
+  "date": "2026-11-12",
+  "weekday": "周日",
+  "start": "19:30",
+  "end": "21:30",
+  "language": "zh",
+  "tableTopicsCount": 10,
+  "segments": [
+    { "id": "b1", "name": "召集与开场", "kind": "opening", "minutes": 8, "owner": "怀童", "ownerStatus": "confirmed" },
+    { "id": "b2", "name": "会议促进者介绍", "kind": "facilitator", "minutes": 20, "owner": "珊珊", "ownerStatus": "pending" },
+    { "id": "b3", "name": "备稿演讲 1", "kind": "speech", "minutes": 15, "owner": "张三", "ownerStatus": "confirmed" },
+    { "id": "b4", "name": "备稿演讲 2", "kind": "speech", "minutes": 15, "owner": "李四", "ownerStatus": "confirmed" },
+    { "id": "b5", "name": "合影与休息", "kind": "break", "minutes": 15, "owner": "王五", "ownerStatus": "confirmed" },
+    { "id": "b6", "name": "即兴演讲", "kind": "tabletopics", "minutes": 20, "owner": "赵六", "ownerStatus": "confirmed" },
+    { "id": "b7", "name": "促进者报告", "kind": "report", "minutes": 25, "owner": "李四", "ownerStatus": "confirmed" },
+    { "id": "b8", "name": "投票与颁奖", "kind": "vote", "minutes": 10, "owner": "怡欣", "ownerStatus": "confirmed" },
+    { "id": "b9", "name": "谢幕", "kind": "closing", "minutes": 8, "owner": "怀童", "ownerStatus": "confirmed" }
+  ],
+  "speeches": [
+    {
+      "id": "bp1",
+      "path": "PM",
+      "level": 3,
+      "title": "高难度项目",
+      "requirement": "PM L3 本项目目的是练习在高压力场景下完成结构化表达，并处理现场提问、设备故障与临时压缩的时间安排",
+      "speaker": "李四",
+      "evaluator": "李四",
+      "minutes": 7,
+      "evalMinutes": 2,
+      "status": "confirmed"
+    },
+    {
+      "id": "bp2",
+      "path": "PM",
+      "level": 1,
+      "title": "顺序排错了",
+      "requirement": "PM L1 破冰 4-6 分钟",
+      "speaker": "王五",
+      "evaluator": "怡欣",
+      "minutes": 7,
+      "evalMinutes": 3,
+      "status": "pending"
+    }
+  ],
+  "notes": ["嘉宾 Alex 首次到访", "本期中文例会"]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Toastmasters 例会海报 335",
+  "kind": "poster",
+  "brand": { "primary": "#772432", "accent": "#F2DF74", "tolerance": 40 },
+  "palette": [
+    { "hex": "#772432", "ratio": 0.36 },
+    { "hex": "#F2DF74", "ratio": 0.22 },
+    { "hex": "#FFFFFF", "ratio": 0.28 },
+    { "hex": "#1F2933", "ratio": 0.14 }
+  ],
+  "texts": [
+    { "label": "主标题", "text": "把话说清楚", "maxChars": 12, "pt": 96 },
+    { "label": "副标题", "text": "第 335 次中文例会", "maxChars": 16, "pt": 36 },
+    { "label": "时间地点", "text": "11 月 5 日 19:30 · 南沙港湾", "maxChars": 24, "pt": 24 }
+  ],
+  "qr": { "modulePx": 4, "quietZoneModules": 4, "contrastRatio": 12.5, "inverted": false },
+  "logo": { "present": true, "clearSpacePx": 24, "minClearSpacePx": 16 },
+  "safeArea": { "top": 48, "bottom": 48, "left": 48, "right": 48, "min": 32 },
+  "trademark": { "nonOfficialClaim": true, "noticeText": "独立俱乐部项目，非 Toastmasters International 官方产品" }
+}

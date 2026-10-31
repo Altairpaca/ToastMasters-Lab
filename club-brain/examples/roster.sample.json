@@ -1,0 +1,13 @@
+{
+  "club": "南沙港湾头马俱乐部",
+  "members": [
+    { "name": "怀童", "english": "Huaitong", "aliases": ["会长", "主席"], "role": "教育副会长" },
+    { "name": "珊珊", "english": "Shanshan", "aliases": ["733"] },
+    { "name": "张三", "english": "Alex" },
+    { "name": "李四", "english": "Ben" },
+    { "name": "王五", "english": "Cindy" },
+    { "name": "赵六", "english": "David" },
+    { "name": "兰辛", "english": "JC", "aliases": ["JC"] },
+    { "name": "怡欣", "english": "Yixin", "aliases": ["计票员"] }
+  ]
+}

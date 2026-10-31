@@ -1,0 +1,42 @@
+{
+  "name": "club-brain",
+  "version": "1.0.0",
+  "description": "Zero-dependency toolkit for Toastmasters club operations: agenda linting, brand compliance, role scheduling, meeting retro, and DCP tracking.",
+  "keywords": [
+    "toastmasters",
+    "club-operations",
+    "agenda",
+    "linter",
+    "scheduler",
+    "zero-dependency",
+    "offline"
+  ],
+  "author": "Altair Li <altairpaca@gmail.com>",
+  "license": "MIT",
+  "main": "src/index.js",
+  "bin": {
+    "club-brain": "src/cli.js"
+  },
+  "files": [
+    "src",
+    "examples",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/agenda.test.js test/toolkit.test.js",
+    "demo": "node src/cli.js demo",
+    "lint:example": "node src/cli.js lint examples/meeting.sample.json --roster examples/roster.sample.json"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Altairpaca/club-brain.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Altairpaca/club-brain/issues"
+  },
+  "homepage": "https://github.com/Altairpaca/club-brain#readme"
+}

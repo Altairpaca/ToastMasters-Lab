@@ -1,0 +1,63 @@
+{
+  "schema": "meeting/v1",
+  "club": "南沙港湾头马俱乐部",
+  "meetingNo": 335,
+  "date": "2026-11-05",
+  "weekday": "周四",
+  "start": "19:30",
+  "end": "21:30",
+  "language": "zh",
+  "theme": "把话说清楚",
+  "tableTopicsCount": 10,
+  "segments": [
+    { "id": "s1", "name": "召集与开场", "kind": "opening", "minutes": 5, "owner": "怀童", "ownerStatus": "confirmed" },
+    { "id": "s2", "name": "会议促进者介绍", "kind": "facilitator", "minutes": 15, "owner": "珊珊", "ownerStatus": "confirmed" },
+    { "id": "s3", "name": "备稿演讲 1", "kind": "speech", "minutes": 10, "owner": "张三", "ownerStatus": "confirmed" },
+    { "id": "s4", "name": "备稿演讲 2", "kind": "speech", "minutes": 10, "owner": "李四", "ownerStatus": "confirmed" },
+    { "id": "s5", "name": "备稿演讲 3", "kind": "speech", "minutes": 10, "owner": "王五", "ownerStatus": "confirmed" },
+    { "id": "s6", "name": "合影与休息", "kind": "break", "minutes": 10, "owner": "王五", "ownerStatus": "confirmed" },
+    { "id": "s7", "name": "即兴演讲", "kind": "tabletopics", "minutes": 25, "owner": "赵六", "ownerStatus": "confirmed" },
+    { "id": "s8", "name": "促进者报告", "kind": "report", "minutes": 18, "owner": "兰辛", "ownerStatus": "confirmed" },
+    { "id": "s9", "name": "投票与颁奖", "kind": "vote", "minutes": 5, "owner": "怡欣", "ownerStatus": "confirmed" },
+    { "id": "s10", "name": "谢幕", "kind": "closing", "minutes": 5, "owner": "怀童", "ownerStatus": "confirmed" }
+  ],
+  "speeches": [
+    {
+      "id": "sp1",
+      "path": "PM",
+      "level": 1,
+      "title": "第一次站上台",
+      "requirement": "PM L1 研究与展示 4-6 分钟 需含明确论点",
+      "speaker": "张三",
+      "evaluator": "赵六",
+      "minutes": 7,
+      "evalMinutes": 3,
+      "status": "confirmed"
+    },
+    {
+      "id": "sp2",
+      "path": "PM",
+      "level": 2,
+      "title": "我的三次失败",
+      "requirement": "PM L2 有效沟通 5-7 分钟 需有故事结构",
+      "speaker": "李四",
+      "evaluator": "怡欣",
+      "minutes": 7,
+      "evalMinutes": 3,
+      "status": "confirmed"
+    },
+    {
+      "id": "sp3",
+      "path": "EC",
+      "level": 2,
+      "title": "把会议开成产品",
+      "requirement": "EC L2 管理项目 5-7 分钟 需含时间线",
+      "speaker": "王五",
+      "evaluator": "珊珊",
+      "minutes": 7,
+      "evalMinutes": 3,
+      "status": "confirmed"
+    }
+  ],
+  "notes": ["宾客 3 位首次到访", "本期中文例会", "二维码沿用长期投票链接"]
+}

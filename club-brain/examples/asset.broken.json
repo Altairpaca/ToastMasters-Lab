@@ -1,0 +1,18 @@
+{
+  "name": "招新海报 v3（有问题的版本）",
+  "kind": "poster",
+  "brand": { "primary": "#772432", "accent": "#F2DF74", "tolerance": 40 },
+  "palette": [
+    { "hex": "#772432", "ratio": 0.08 },
+    { "hex": "#2B6CB0", "ratio": 0.62 },
+    { "hex": "#FFFFFF", "ratio": 0.3 }
+  ],
+  "texts": [
+    { "label": "主标题", "text": "加入我们，保证三个月成为演讲高手", "maxChars": 12, "pt": 22 },
+    { "label": "副标题", "text": "全广州最专业的演讲俱乐部", "maxChars": 16, "pt": 20 }
+  ],
+  "qr": { "modulePx": 2, "quietZoneModules": 2, "contrastRatio": 3.1, "inverted": true },
+  "logo": { "present": false },
+  "safeArea": { "top": 12, "bottom": 20, "left": 16, "right": 16, "min": 32 },
+  "trademark": { "nonOfficialClaim": false }
+}

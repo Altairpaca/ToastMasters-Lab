@@ -1,0 +1,11 @@
+{
+  "period": { "from": "2026-07-01", "to": "2026-12-31" },
+  "awards": { "level1": 3, "level2": 3, "level3": 1, "level45": 0 },
+  "newMembers": 5,
+  "officersTrained": { "round1": 5, "round2": 3 },
+  "duesOnTime": true,
+  "history": [
+    { "month": "2026-07", "achieved": 1 },
+    { "month": "2026-10", "achieved": 5 }
+  ]
+}

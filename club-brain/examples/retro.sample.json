@@ -1,0 +1,30 @@
+{
+  "meetingNo": 335,
+  "date": "2026-11-05",
+  "attendance": { "members": 16, "guests": 3 },
+  "timing": [
+    { "segment": "召集与开场", "speaker": "怀童", "planned": 5, "actual": 6 },
+    { "segment": "会议促进者", "speaker": "珊珊", "planned": 15, "actual": 16 },
+    { "segment": "备稿 1", "speaker": "张三", "planned": 10, "actual": 13 },
+    { "segment": "备稿 2", "speaker": "李四", "planned": 10, "actual": 9 },
+    { "segment": "即兴演讲", "speaker": "赵六", "planned": 25, "actual": 31 },
+    { "segment": "促进者报告", "speaker": "兰辛", "planned": 18, "actual": 16 }
+  ],
+  "ah": [
+    { "speaker": "张三", "counts": { "嗯": 5, "然后": 4 } },
+    { "speaker": "赵六", "counts": { "那个": 7, "就是": 3 } },
+    { "speaker": "珊珊", "counts": { "嗯": 2 } }
+  ],
+  "grammar": {
+    "good": ["把复杂的事情说简单", "他的停顿比语言更有力", "结尾回扣开头很漂亮"],
+    "issues": [
+      { "type": "用词", "text": "进行一个讲解", "fix": "改为「讲解」" },
+      { "type": "语法", "text": "通过这次让我学到", "fix": "改为「这次让我学到」" }
+    ]
+  },
+  "ratings": [
+    { "item": "节奏", "score": 4 },
+    { "item": "内容", "score": 5 },
+    { "item": "组织", "score": 4 }
+  ]
+}
